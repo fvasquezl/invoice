@@ -1,10 +1,10 @@
 <div class="invoice-container bg-white"
-    style="font-family: {{ $invoice->template->settings['font-family'] ?? 'Arial' }};">
+     style="font-family: {{ $invoice->template->settings['font-family'] ?? 'Arial' }}">
 
+    {{-- This is the base container - specific template will override this --}}
     <div class="invoice-content">
         {{ $slot }}
     </div>
-
 </div>
 
 <style>

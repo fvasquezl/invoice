@@ -42,7 +42,7 @@ class TemplateSeeder extends Seeder
                 'slug' => 'creative-agency',
                 'description' => 'Bold and colorful design perfect for creative professionals',
                 'settings' => [
-                    'primary_color' => '#7c3eed',
+                    'primary_color' => '#7c3aed',
                     'font_family' => 'Poppins',
                     'layout' => 'asymmetric',
                 ],

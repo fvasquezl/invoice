@@ -34,7 +34,7 @@ class InvoiceItem extends Model
             $item->invoice->calculateTotals();
         });
 
-        static::delete(function ($item) {
+        static::deleted(function ($item) {
             $item->invoice->calculateTotals();
         });
     }
