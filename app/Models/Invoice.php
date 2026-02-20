@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
-use function Symfony\Component\Clock\now;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Invoice extends Model
 {
@@ -35,8 +33,8 @@ class Invoice extends Model
         'total',
         'status',
         'template_id',
+        'pdf_path',
     ];
-
     protected $casts = [
         'invoice_date' => 'date',
         'due_date' => 'date',
@@ -61,6 +59,7 @@ class Invoice extends Model
         return $this->belongsTo(Template::class);
     }
 
+    //helper method to calculate totals
     public function calculateTotals(): void
     {
         $this->subtotal = $this->items->sum('total');
@@ -79,6 +78,5 @@ class Invoice extends Model
         $number = $lastInvoice ? (int) substr($lastInvoice->invoice_number, -4) + 1 : 1;
 
         return 'INV-' . $year . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
-
     }
 }

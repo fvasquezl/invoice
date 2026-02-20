@@ -59,7 +59,7 @@
 @filamentScripts
 @livewireScripts
 {{-- Auth modal --}}
-<livewire:auth-modal />
+<livewire:auth-modal/>
 <div x-data="{
             show: false,
             message: '',

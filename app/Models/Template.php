@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Template extends Model
 {
@@ -26,13 +25,14 @@ class Template extends Model
         'sort_order' => 'integer',
     ];
 
-    public function invoices(): HasMany
+    public function invoices()
     {
         return $this->hasMany(Invoice::class);
     }
 
-    public function scopeActive($query): mixed
+    public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('is_active', true)
+            ->orderBy('sort_order');
     }
 }
