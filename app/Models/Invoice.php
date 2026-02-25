@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Invoice extends Model
 {
@@ -13,6 +13,7 @@ class Invoice extends Model
 
     protected $fillable = [
         'user_id',
+        'company_id',
         'invoice_number',
         'company_name',
         'company_email',
@@ -35,6 +36,7 @@ class Invoice extends Model
         'template_id',
         'pdf_path',
     ];
+
     protected $casts = [
         'invoice_date' => 'date',
         'due_date' => 'date',
@@ -59,7 +61,12 @@ class Invoice extends Model
         return $this->belongsTo(Template::class);
     }
 
-    //helper method to calculate totals
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    // helper method to calculate totals
     public function calculateTotals(): void
     {
         $this->subtotal = $this->items->sum('total');
