@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
 {
@@ -21,5 +23,21 @@ class Company extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    protected function companyLogo(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => \is_null($value)
+            ? null
+            : (\str_starts_with($value, 'data:image')
+                ? $value
+                : 'data:image/png;base64,' . base64_encode(file_get_contents($value))),
+        );
     }
 }

@@ -10,11 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('company_user', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('company_id')->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->timestamps();
+        Schema::table('companies', function (Blueprint $table) {
+            $table->longText('company_logo')->nullable()->change();
         });
     }
 
@@ -23,6 +20,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('company_user');
+        Schema::table('companies', function (Blueprint $table) {
+            $table->string('company_logo')->nullable()->change();
+        });
     }
 };
