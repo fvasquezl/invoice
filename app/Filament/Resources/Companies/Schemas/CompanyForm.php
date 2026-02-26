@@ -23,8 +23,6 @@ class CompanyForm
                     ->tel(),
                 FileUpload::make('company_logo')
                     ->image()
-                    ->disk('public')
-                    ->directory('logos')
                     ->nullable(),
             ]);
     }
