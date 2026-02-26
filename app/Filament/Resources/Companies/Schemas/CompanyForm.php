@@ -29,8 +29,7 @@ class CompanyForm
                     ->state(fn ($record) => $record?->company_logo
                         ? new HtmlString('<img src="' . $record->company_logo . '" style="max-width: 50%; height: auto;"/>')
                         : new HtmlString('<span class="text-gray-400 text-sm">Sin logo</span>'))
-                    ->html()
-                    ->hidden(fn ($record) => $record === null),
+                    ->html(),
                 FileUpload::make('company_logo')
                     ->label(fn ($record) => $record?->company_logo ? 'Cambiar logo' : 'Logo')
                     ->image()
