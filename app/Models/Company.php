@@ -35,9 +35,7 @@ class Company extends Model
         return Attribute::make(
             set: fn($value) => \is_null($value)
             ? null
-            : (\str_starts_with($value, 'data:image')
-                ? $value
-                : 'data:image/png;base64,' . base64_encode(file_get_contents($value))),
+            : $value,
         );
     }
 }

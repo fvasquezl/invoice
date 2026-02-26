@@ -16,4 +16,13 @@ class EditCompany extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (empty($data['company_logo'])) {
+            $data['company_logo'] = $this->record->company_logo;
+        }
+
+        return $data;
+    }
 }
