@@ -26,24 +26,71 @@
             </div>
             <div class="flex items-center space-x-4">
                 @auth
-                    <span class="text-sm text-gray-600">{{ Auth::user()->name }}</span>
-                    <a href="{{ route('filament.admin.pages.dashboard') }}"
-                       class="text-gray-700 hover:text-gray-900 font-medium">
-                        Dashboard
-                    </a>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-gray-700 hover:text-gray-900">
-                            Sign Out
+                    <div class="relative" x-data="{ open: false }">
+                        <button
+                            @click="open = !open"
+                            @click.outside="open = false"
+                            class="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 font-medium focus:outline-none"
+                        >
+                            <span class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold select-none">
+                                {{ collect(explode(' ', Auth::user()->name))->map(fn($w) => strtoupper($w[0]))->take(2)->implode('') }}
+                            </span>
+                            <span class="hidden sm:block">{{ Auth::user()->name }}</span>
+                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-150" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
                         </button>
-                    </form>
+
+                        <div
+                            x-show="open"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50"
+                            style="display: none;"
+                        >
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="text-sm font-semibold text-gray-900 truncate">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-gray-500 truncate mt-0.5">{{ Auth::user()->email }}</p>
+                            </div>
+
+                            <a href="{{ route('dashboard') }}"
+                               class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h7v7H3zM14 7h7v7h-7zM3 17h7v4H3zM14 17h7v4h-7z"/>
+                                </svg>
+                                Dashboard
+                            </a>
+
+                            <a href="{{ route('create-invoice') }}"
+                               class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition border-b border-gray-100">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                New Invoice
+                            </a>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
+                                >
+                                    Sign out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 @else
-                    <button type="button" onclick="Livewire.dispatch('open-auth-modal', { mode: 'login' })"
-                            class="text-gray-700 hover:text-gray-900 font-medium">
+                    <a href="{{ route('login') }}"
+                       class="text-gray-700 hover:text-gray-900 font-medium text-sm">
                         Sign In
-                    </button>
+                    </a>
                     <button type="button" onclick="Livewire.dispatch('open-auth-modal', { mode: 'register' })"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm">
                         Sign Up
                     </button>
                 @endauth

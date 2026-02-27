@@ -14,7 +14,7 @@
     @break
 
     @case('corporate-blue')
-        <x-templates.classic-business :invoice="$invoice" :forPdf="$forPdf" />
+        <x-templates.corporate-blue :invoice="$invoice" :forPdf="$forPdf" />
     @break
 
     @default

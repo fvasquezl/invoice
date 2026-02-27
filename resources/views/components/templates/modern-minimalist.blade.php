@@ -2,6 +2,16 @@
 
 @php
     $primaryColor = $invoice->template->settings['primary_color'] ?? '#2563eb';
+    $logoSrc = $invoice->company_logo
+        ? (str_starts_with($invoice->company_logo, 'data:')
+            ? $invoice->company_logo
+            : Storage::url($invoice->company_logo))
+        : null;
+    $logoSrcPdf = $invoice->company_logo
+        ? (str_starts_with($invoice->company_logo, 'data:')
+            ? $invoice->company_logo
+            : storage_path('app/public/' . $invoice->company_logo))
+        : null;
 @endphp
 
 @if($forPdf)
@@ -13,10 +23,10 @@
             <tr>
                 {{-- Company Info --}}
                 <td style="vertical-align: top;">
-                    @if($invoice->company_logo)
-                        <img src="{{ storage_path('app/public/' . $invoice->company_logo) }}"
+                    @if($logoSrcPdf)
+                        <img src="{{ $logoSrcPdf }}"
                              alt="{{ $invoice->company_name }}"
-                             style="height: 50px; margin-bottom: 12px;">
+                             style="height: 72px; margin-bottom: 12px; object-fit: contain;">
                     @endif
                     <div style="font-size: 26px; font-weight: bold; margin-bottom: 8px; color: {{ $primaryColor }};">
                         {{ $invoice->company_name }}
@@ -161,10 +171,10 @@
         <div class="flex justify-between items-start mb-12">
             {{-- Company Info --}}
             <div class="flex-1">
-                @if($invoice->company_logo)
-                    <img src="{{ Storage::url($invoice->company_logo) }}"
+                @if($logoSrc)
+                    <img src="{{ $logoSrc }}"
                          alt="{{ $invoice->company_name }}"
-                         class="h-16 mb-4">
+                         class="h-20 mb-4 object-contain">
                 @endif
                 <h1 class="text-3xl font-bold mb-2" style="color: {{ $primaryColor }}">
                     {{ $invoice->company_name }}

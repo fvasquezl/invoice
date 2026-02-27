@@ -2,6 +2,16 @@
 
 @php
     $primaryColor = $invoice->template->settings['primary_color'] ?? '#7c3aed';
+    $logoSrc = $invoice->company_logo
+        ? (str_starts_with($invoice->company_logo, 'data:')
+            ? $invoice->company_logo
+            : Storage::url($invoice->company_logo))
+        : null;
+    $logoSrcPdf = $invoice->company_logo
+        ? (str_starts_with($invoice->company_logo, 'data:')
+            ? $invoice->company_logo
+            : storage_path('app/public/' . $invoice->company_logo))
+        : null;
 @endphp
 
 @if($forPdf)
@@ -13,10 +23,10 @@
             <table style="width: 100%;">
                 <tr>
                     <td style="vertical-align: top; color: #ffffff;">
-                        @if($invoice->company_logo)
-                            <img src="{{ storage_path('app/public/' . $invoice->company_logo) }}"
+                        @if($logoSrcPdf)
+                            <img src="{{ $logoSrcPdf }}"
                                  alt="{{ $invoice->company_name }}"
-                                 style="height: 50px; margin-bottom: 12px;">
+                                 style="height: 72px; margin-bottom: 12px; object-fit: contain;">
                         @endif
                         <div style="font-size: 30px; font-weight: bold; margin-bottom: 8px; color: #ffffff;">
                             {{ $invoice->company_name }}
@@ -156,10 +166,10 @@
         <div class="p-12 pb-8" style="background: linear-gradient(135deg, {{ $primaryColor }} 0%, {{ $primaryColor }}dd 100%)">
             <div class="flex justify-between items-start text-white">
                 <div>
-                    @if($invoice->company_logo)
-                        <img src="{{ Storage::url($invoice->company_logo) }}"
+                    @if($logoSrc)
+                        <img src="{{ $logoSrc }}"
                              alt="{{ $invoice->company_name }}"
-                             class="h-16 mb-4 brightness-0 invert">
+                             class="h-20 mb-4 object-contain brightness-0 invert">
                     @endif
                     <h1 class="text-4xl font-bold mb-2">{{ $invoice->company_name }}</h1>
                     <div class="text-white/90 space-y-1">

@@ -2,6 +2,16 @@
 
 @php
     $primaryColor = $invoice->template->settings['primary_color'] ?? '#1e3a8a';
+    $logoSrc = $invoice->company_logo
+        ? (str_starts_with($invoice->company_logo, 'data:')
+            ? $invoice->company_logo
+            : Storage::url($invoice->company_logo))
+        : null;
+    $logoSrcPdf = $invoice->company_logo
+        ? (str_starts_with($invoice->company_logo, 'data:')
+            ? $invoice->company_logo
+            : storage_path('app/public/' . $invoice->company_logo))
+        : null;
 @endphp
 
 @if($forPdf)
@@ -12,10 +22,10 @@
     <table style="width: 100%; margin-bottom: 30px; border-bottom: 4px solid {{ $primaryColor }}; padding-bottom: 20px;">
         <tr>
             <td style="vertical-align: middle;">
-                @if($invoice->company_logo)
-                    <img src="{{ storage_path('app/public/' . $invoice->company_logo) }}"
+                @if($logoSrcPdf)
+                    <img src="{{ $logoSrcPdf }}"
                          alt="{{ $invoice->company_name }}"
-                         style="height: 60px; margin-bottom: 10px;">
+                         style="height: 72px; margin-bottom: 10px; object-fit: contain;">
                 @endif
                 <div style="font-size: 24px; font-weight: bold; color: {{ $primaryColor }};">
                     {{ $invoice->company_name }}
@@ -209,10 +219,10 @@
     <div class="border-b-4 pb-6 mb-8" style="border-color: {{ $primaryColor }}">
         <div class="flex justify-between items-center">
             <div>
-                @if($invoice->company_logo)
-                    <img src="{{ Storage::url($invoice->company_logo) }}"
+                @if($logoSrc)
+                    <img src="{{ $logoSrc }}"
                          alt="{{ $invoice->company_name }}"
-                         class="h-20 mb-3">
+                         class="h-20 mb-3 object-contain">
                 @endif
                 <h1 class="text-2xl font-bold" style="color: {{ $primaryColor }}">
                     {{ $invoice->company_name }}

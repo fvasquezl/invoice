@@ -13,6 +13,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Hidden;
+use App\Models\Company;
 use App\Models\Template;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -38,6 +40,8 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
         } else {
             $this->form->fill([
                 'template_id' => 1,
+                'company_id'  => null,
+                'company_logo' => null,
                 'invoice_date' => now()->format('Y-m-d'),
                 'due_date' => now()->addDays(30)->format('Y-m-d'),
                 'tax_rate' => 10,
@@ -65,6 +69,33 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
         }
     }
 
+    public function fillFromCompany(?int $id): void
+    {
+        if (!$id) {
+            $this->form->fill(array_merge($this->data ?? [], [
+                'company_id'      => null,
+                'company_name'    => '',
+                'company_address' => '',
+                'company_email'   => '',
+                'company_phone'   => '',
+                'company_logo'    => null,
+            ]));
+            return;
+        }
+
+        $company = Company::find($id);
+        if (!$company) return;
+
+        $this->form->fill(array_merge($this->data ?? [], [
+            'company_id'      => $id,
+            'company_name'    => $company->company_name,
+            'company_address' => $company->company_address ?? '',
+            'company_email'   => $company->company_email ?? '',
+            'company_phone'   => $company->company_phone ?? '',
+            'company_logo'    => $company->company_logo,
+        ]));
+    }
+
     // the form
     public function form(Schema $schema): Schema
     {
@@ -77,18 +108,34 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
                             ->columnSpanFull()
                             ->description('Your business details')
                             ->schema([
+                                Select::make('company_id')
+                                    ->label('Select Company')
+                                    ->placeholder('Select a company or fill manually below')
+                                    ->options(fn () => Auth::check()
+                                        ? Auth::user()->companies->pluck('company_name', 'id')
+                                        : [])
+                                    ->live()
+                                    ->afterStateUpdated(fn (?string $state) =>
+                                        $this->fillFromCompany($state ? (int) $state : null))
+                                    ->visible(fn () => Auth::check()
+                                        && Auth::user()->companies->isNotEmpty()),
+
+                                Hidden::make('company_logo'),
+
                                 TextInput::make('company_name')
                                     ->label('Company Name')
                                     ->required()
                                     ->maxLength(255)
                                     ->placeholder('Your Company Name')
-                                    ->live(debounce: 500),
+                                    ->live(debounce: 500)
+                                    ->readOnly(fn () => filled($this->data['company_id'] ?? null)),
 
                                 Textarea::make('company_address')
                                     ->label('Address')
                                     ->rows(3)
                                     ->placeholder('123 Business Street, City, Country')
-                                    ->live(debounce: 500),
+                                    ->live(debounce: 500)
+                                    ->readOnly(fn () => filled($this->data['company_id'] ?? null)),
 
                                 Grid::make(2)
                                     ->schema([
@@ -96,13 +143,15 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
                                             ->label('Email')
                                             ->email()
                                             ->placeholder('hello@company.com')
-                                            ->live(onBlur: true),
+                                            ->live(onBlur: true)
+                                            ->readOnly(fn () => filled($this->data['company_id'] ?? null)),
 
                                         TextInput::make('company_phone')
                                             ->label('Phone')
                                             ->tel()
                                             ->placeholder('+1 (555) 123-4567')
-                                            ->live(onBlur: true),
+                                            ->live(onBlur: true)
+                                            ->readOnly(fn () => filled($this->data['company_id'] ?? null)),
                                     ]),
                             ])
                     ])->columnSpan(1),
@@ -265,6 +314,7 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
             'company_address' => $data['company_address'] ?? null,
             'company_email' => $data['company_email'] ?? null,
             'company_phone' => $data['company_phone'] ?? null,
+            'company_logo' => $data['company_logo'] ?? null,
             'client_name' => $data['client_name'] ?? 'Client Name',
             'client_address' => $data['client_address'] ?? null,
             'client_email' => $data['client_email'] ?? null,
@@ -304,12 +354,14 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
         $data = $this->data;
 
         $invoice = Invoice::create([
-            'user_id' => Auth::id(),
+            'user_id'   => Auth::id(),
+            'company_id' => $data['company_id'] ?? null,
             'invoice_number' => (new Invoice())->generateInvoiceNumber(),
             'company_name' => $data['company_name'],
             'company_address' => $data['company_address'] ?? null,
             'company_email' => $data['company_email'] ?? null,
             'company_phone' => $data['company_phone'] ?? null,
+            'company_logo' => $data['company_logo'] ?? null,
             'client_name' => $data['client_name'],
             'client_address' => $data['client_address'] ?? null,
             'client_email' => $data['client_email'] ?? null,
@@ -472,6 +524,15 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
 
 <div class="space-y-6">
     <div class="bg-white rounded-lg shadow-sm p-6">
+        @auth
+            <a href="{{ route('dashboard') }}"
+               class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-4 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Dashboard
+            </a>
+        @endauth
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Create Invoice</h1>
         <p class="text-gray-600">Fill in the details below to generate your professional invoice</p>
     </div>
