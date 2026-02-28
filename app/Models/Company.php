@@ -19,6 +19,7 @@ class Company extends Model
         'company_email',
         'company_phone',
         'company_logo',
+        'template_id',
         'created_by',
     ];
 
@@ -32,6 +33,16 @@ class Company extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(Template::class);
+    }
+
+    public function clients(): BelongsToMany
+    {
+        return $this->belongsToMany(Client::class);
+    }
+
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class);
@@ -40,7 +51,7 @@ class Company extends Model
     protected function companyLogo(): Attribute
     {
         return Attribute::make(
-            set: fn($value) => \is_null($value)
+            set: fn ($value) => \is_null($value)
             ? null
             : $value,
         );

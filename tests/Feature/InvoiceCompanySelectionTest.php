@@ -120,9 +120,8 @@ class InvoiceCompanySelectionTest extends TestCase
             ->call('handleDownload');
 
         $this->assertDatabaseHas('invoices', [
-            'user_id'      => $user->id,
-            'company_id'   => $company->id,
-            'company_name' => $company->company_name,
+            'user_id'    => $user->id,
+            'company_id' => $company->id,
         ]);
     }
 }

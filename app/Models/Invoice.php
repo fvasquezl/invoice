@@ -14,16 +14,8 @@ class Invoice extends Model
     protected $fillable = [
         'user_id',
         'company_id',
+        'client_id',
         'invoice_number',
-        'company_name',
-        'company_email',
-        'company_phone',
-        'company_address',
-        'company_logo',
-        'client_name',
-        'client_email',
-        'client_phone',
-        'client_address',
         'invoice_date',
         'due_date',
         'notes',
@@ -66,6 +58,56 @@ class Invoice extends Model
         return $this->belongsTo(Company::class);
     }
 
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function getCompanyNameAttribute(): string
+    {
+        return $this->company?->company_name ?? '';
+    }
+
+    public function getCompanyAddressAttribute(): ?string
+    {
+        return $this->company?->company_address;
+    }
+
+    public function getCompanyEmailAttribute(): ?string
+    {
+        return $this->company?->company_email;
+    }
+
+    public function getCompanyPhoneAttribute(): ?string
+    {
+        return $this->company?->company_phone;
+    }
+
+    public function getCompanyLogoAttribute(): ?string
+    {
+        return $this->company?->company_logo;
+    }
+
+    public function getClientNameAttribute(): string
+    {
+        return $this->client?->name ?? '';
+    }
+
+    public function getClientAddressAttribute(): ?string
+    {
+        return $this->client?->address;
+    }
+
+    public function getClientEmailAttribute(): ?string
+    {
+        return $this->client?->email;
+    }
+
+    public function getClientPhoneAttribute(): ?string
+    {
+        return $this->client?->phone;
+    }
+
     // helper method to calculate totals
     public function calculateTotals(): void
     {
@@ -84,6 +126,6 @@ class Invoice extends Model
 
         $number = $lastInvoice ? (int) substr($lastInvoice->invoice_number, -4) + 1 : 1;
 
-        return 'INV-' . $year . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        return 'INV-'.$year.'-'.str_pad($number, 4, '0', STR_PAD_LEFT);
     }
 }

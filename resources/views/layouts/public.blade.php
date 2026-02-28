@@ -55,6 +55,12 @@
                             <div class="px-4 py-3 border-b border-gray-100">
                                 <p class="text-sm font-semibold text-gray-900 truncate">{{ Auth::user()->name }}</p>
                                 <p class="text-xs text-gray-500 truncate mt-0.5">{{ Auth::user()->email }}</p>
+                                @php $role = Auth::user()->getRoleNames()->first() @endphp
+                                @if($role)
+                                    <span class="inline-block mt-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                                        {{ str_replace('_', ' ', ucfirst($role)) }}
+                                    </span>
+                                @endif
                             </div>
 
                             <a href="{{ route('dashboard') }}"

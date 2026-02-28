@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Companies\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
@@ -27,7 +28,7 @@ class CompanyForm
                 TextEntry::make('company_logo_preview')
                     ->label('Logo actual')
                     ->state(fn ($record) => $record?->company_logo
-                        ? new HtmlString('<img src="' . $record->company_logo . '" style="max-width: 50%; height: auto;"/>')
+                        ? new HtmlString('<img src="'.$record->company_logo.'" style="max-width: 50%; height: auto;"/>')
                         : new HtmlString('<span class="text-gray-400 text-sm">Sin logo</span>'))
                     ->html(),
                 FileUpload::make('company_logo')
@@ -39,8 +40,14 @@ class CompanyForm
                         $content = $file->getContent();
                         $mime = $file->getMimeType();
                         $file->delete();
-                        return 'data:' . $mime . ';base64,' . base64_encode($content);
+
+                        return 'data:'.$mime.';base64,'.base64_encode($content);
                     }),
+                Select::make('template_id')
+                    ->label('Invoice Template')
+                    ->relationship('template', 'name')
+                    ->nullable()
+                    ->placeholder('Select a template'),
             ]);
     }
 }
