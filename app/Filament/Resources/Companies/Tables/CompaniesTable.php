@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Companies\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Schemas\Components\Image;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -16,13 +15,13 @@ class CompaniesTable
     {
         return $table
             ->columns([
-                TextColumn::make('company_name')
+                TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('company_email')
+                TextColumn::make('email')
                     ->searchable(),
-                TextColumn::make('company_phone')
+                TextColumn::make('phone')
                     ->searchable(),
-                ImageColumn::make('company_logo'),
+                ImageColumn::make('logo'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

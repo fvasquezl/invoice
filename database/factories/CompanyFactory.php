@@ -18,11 +18,11 @@ class CompanyFactory extends Factory
     {
 
         return [
-            'company_name' => fake()->company(),
-            'company_email' => fake()->companyEmail(),
-            'company_phone' => fake()->phoneNumber(),
-            'company_address' => fake()->address(),
-            'company_logo' => null,
+            'name' => fake()->company(),
+            'email' => fake()->companyEmail(),
+            'phone' => fake()->numerify('+1-###-###-####'),
+            'address' => fake()->address(),
+            'logo' => null,
         ];
 
     }

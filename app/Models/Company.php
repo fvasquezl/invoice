@@ -14,11 +14,11 @@ class Company extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_name',
-        'company_address',
-        'company_email',
-        'company_phone',
-        'company_logo',
+        'name',
+        'address',
+        'email',
+        'phone',
+        'logo',
         'template_id',
         'created_by',
     ];
@@ -48,10 +48,10 @@ class Company extends Model
         return $this->hasMany(Invoice::class);
     }
 
-    protected function companyLogo(): Attribute
+    protected function logo(): Attribute
     {
         return Attribute::make(
-            set: fn ($value) => \is_null($value)
+            set: fn ($value) => is_null($value)
             ? null
             : $value,
         );

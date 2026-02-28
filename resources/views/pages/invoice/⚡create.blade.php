@@ -97,11 +97,11 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
 
         $this->form->fill(array_merge($this->data ?? [], [
             'company_id'      => $id,
-            'company_name'    => $company->company_name,
-            'company_address' => $company->company_address ?? '',
-            'company_email'   => $company->company_email ?? '',
-            'company_phone'   => $company->company_phone ?? '',
-            'company_logo'    => $company->company_logo,
+            'company_name'    => $company->name,
+            'company_address' => $company->address ?? '',
+            'company_email'   => $company->email ?? '',
+            'company_phone'   => $company->phone ?? '',
+            'company_logo'    => $company->logo,
             'template_id'     => $company->template_id,
             'client_id'       => null,
             'client_name'     => '',
@@ -175,8 +175,8 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
                                     ->placeholder('Search a company...')
                                     ->options(fn () => Auth::check()
                                         ? (Auth::user()->hasRole('super_admin')
-                                            ? Company::query()->pluck('company_name', 'id')
-                                            : Auth::user()->companies->pluck('company_name', 'id'))
+                                            ? Company::query()->pluck('name', 'id')
+                                            : Auth::user()->companies->pluck('name', 'id'))
                                         : [])
                                     ->searchable()
                                     ->required()
@@ -413,12 +413,12 @@ new #[Layout('layouts.public')] class extends Component implements HasActions, H
         $data = $this->data;
 
         $previewCompany = new Company([
-            'company_name'    => filled($data['company_name'] ?? '') ? $data['company_name'] : 'Your Company',
-            'company_address' => $data['company_address'] ?? null,
-            'company_email'   => $data['company_email']   ?? null,
-            'company_phone'   => $data['company_phone']   ?? null,
-            'company_logo'    => $data['company_logo']    ?? null,
-            'template_id'     => $data['template_id']     ?? null,
+            'name'       => filled($data['company_name'] ?? '') ? $data['company_name'] : 'Your Company',
+            'address'    => $data['company_address'] ?? null,
+            'email'      => $data['company_email']   ?? null,
+            'phone'      => $data['company_phone']   ?? null,
+            'logo'       => $data['company_logo']    ?? null,
+            'template_id' => $data['template_id']   ?? null,
         ]);
 
         $previewClient = new Client([

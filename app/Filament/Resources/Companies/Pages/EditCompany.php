@@ -19,8 +19,8 @@ class EditCompany extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        if (empty($data['company_logo'])) {
-            $data['company_logo'] = $this->record->company_logo;
+        if (empty($data['logo'])) {
+            $data['logo'] = $this->record->logo;
         }
 
         return $data;

@@ -20,7 +20,7 @@ class InvoicesTable
                 TextColumn::make('client.name')
                     ->label('Client')
                     ->searchable(),
-                TextColumn::make('company.company_name')
+                TextColumn::make('company.name')
                     ->label('Company')
                     ->sortable(),
                 TextColumn::make('status')

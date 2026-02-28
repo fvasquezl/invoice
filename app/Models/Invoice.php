@@ -65,27 +65,27 @@ class Invoice extends Model
 
     public function getCompanyNameAttribute(): string
     {
-        return $this->company?->company_name ?? '';
+        return $this->company?->name ?? '';
     }
 
     public function getCompanyAddressAttribute(): ?string
     {
-        return $this->company?->company_address;
+        return $this->company?->address;
     }
 
     public function getCompanyEmailAttribute(): ?string
     {
-        return $this->company?->company_email;
+        return $this->company?->email;
     }
 
     public function getCompanyPhoneAttribute(): ?string
     {
-        return $this->company?->company_phone;
+        return $this->company?->phone;
     }
 
     public function getCompanyLogoAttribute(): ?string
     {
-        return $this->company?->company_logo;
+        return $this->company?->logo;
     }
 
     public function getClientNameAttribute(): string

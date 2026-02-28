@@ -30,7 +30,7 @@ class InvoiceCompanySelectionTest extends TestCase
 
         Livewire::actingAs($user)
             ->test('pages::invoice.create')
-            ->assertSee($company->company_name);
+            ->assertSee($company->name);
     }
 
     public function test_company_selector_is_hidden_for_user_without_companies(): void
@@ -49,10 +49,10 @@ class InvoiceCompanySelectionTest extends TestCase
         /** @var User $user */
         $user = User::factory()->create();
         $company = Company::factory()->create([
-            'company_name'    => 'Acme Corp',
-            'company_email'   => 'acme@example.com',
-            'company_phone'   => '+1 555 0001',
-            'company_address' => '1 Acme Road',
+            'name' => 'Acme Corp',
+            'email' => 'acme@example.com',
+            'phone' => '+1 555 0001',
+            'address' => '1 Acme Road',
         ]);
         $user->companies()->attach($company);
 
@@ -68,11 +68,11 @@ class InvoiceCompanySelectionTest extends TestCase
 
     public function test_selecting_a_company_stores_its_logo(): void
     {
-        $logo = 'data:image/png;base64,' . base64_encode('fake-logo');
+        $logo = 'data:image/png;base64,'.base64_encode('fake-logo');
 
         /** @var User $user */
         $user = User::factory()->create();
-        $company = Company::factory()->create(['company_logo' => $logo]);
+        $company = Company::factory()->create(['logo' => $logo]);
         $user->companies()->attach($company);
 
         Livewire::actingAs($user)
@@ -85,7 +85,7 @@ class InvoiceCompanySelectionTest extends TestCase
     {
         /** @var User $user */
         $user = User::factory()->create();
-        $company = Company::factory()->create(['company_name' => 'Acme Corp']);
+        $company = Company::factory()->create(['name' => 'Acme Corp']);
         $user->companies()->attach($company);
 
         Livewire::actingAs($user)
@@ -114,13 +114,13 @@ class InvoiceCompanySelectionTest extends TestCase
             ->set('data.due_date', now()->addDays(30)->format('Y-m-d'))
             ->set('data.items', [[
                 'description' => 'Service',
-                'quantity'    => 1,
-                'unit_price'  => 100,
+                'quantity' => 1,
+                'unit_price' => 100,
             ]])
             ->call('handleDownload');
 
         $this->assertDatabaseHas('invoices', [
-            'user_id'    => $user->id,
+            'user_id' => $user->id,
             'company_id' => $company->id,
         ]);
     }

@@ -17,22 +17,22 @@ class CompanyForm
     {
         return $schema
             ->components([
-                TextInput::make('company_name')
+                TextInput::make('name')
                     ->required(),
-                Textarea::make('company_address')
+                Textarea::make('address')
                     ->columnSpanFull(),
-                TextInput::make('company_email')
+                TextInput::make('email')
                     ->email(),
-                TextInput::make('company_phone')
+                TextInput::make('phone')
                     ->tel(),
-                TextEntry::make('company_logo_preview')
+                TextEntry::make('logo_preview')
                     ->label('Logo actual')
-                    ->state(fn ($record) => $record?->company_logo
-                        ? new HtmlString('<img src="'.$record->company_logo.'" style="max-width: 50%; height: auto;"/>')
+                    ->state(fn ($record) => $record?->logo
+                        ? new HtmlString('<img src="'.$record->logo.'" style="max-width: 50%; height: auto;"/>')
                         : new HtmlString('<span class="text-gray-400 text-sm">Sin logo</span>'))
                     ->html(),
-                FileUpload::make('company_logo')
-                    ->label(fn ($record) => $record?->company_logo ? 'Cambiar logo' : 'Logo')
+                FileUpload::make('logo')
+                    ->label(fn ($record) => $record?->logo ? 'Cambiar logo' : 'Logo')
                     ->image()
                     ->nullable()
                     ->getUploadedFileUsing(fn () => null)
